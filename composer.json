@@ -1,0 +1,28 @@
+{
+  "name": "apie/phpunit-matrix-data-provider",
+  "description": "Create a data provider by making all possible combinations.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pieter Jordaan",
+      "email": "pieter_jordaan@hotmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Apie\\PhpunitMatrixDataProvider\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Apie\\Tests\\PhpunitMatrixDataProvider\\": "tests/"
+    }
+  },
+  "require": {
+    "php": ">=8.1",
+    "phpunit/phpunit": "^9.5"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
