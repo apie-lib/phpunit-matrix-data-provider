@@ -96,4 +96,32 @@ class MatrixBuilderTest extends TestCase
         $matrix = $matrixBuilder->createMatrix(new ReflectionMethod($this, __FUNCTION__));
         $this->assertCount(2, $matrix);
     }
+
+    /**
+     * @test
+     */
+    public function it_skips_returned_null_values()
+    {
+        $objectFactory = new class {
+            public function getOne(): ?int
+            {
+                return 1;
+            }
+            public function getTwo(): ?int
+            {
+                return null;
+            }
+            public function toString(int $input): string
+            {
+                return (string) $input;
+            }
+            public function anotherTest(string $hello): float
+            {
+                return 1.0;
+            }
+        };
+        $matrixBuilder = new MatrixBuilder($objectFactory);
+        $matrix = $matrixBuilder->createMatrix(new ReflectionMethod($objectFactory, 'anotherTest'));
+        $this->assertEquals([["1"]], $matrix);
+    }
 }

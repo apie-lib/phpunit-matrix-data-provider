@@ -36,7 +36,10 @@ final class MatrixBuilder
             $this->resolvedTypes[$typeString] = [];
             foreach ($this->resolvedMethods[$typeString] ?? [] as $method) {
                 foreach ($this->createMatrix($method) as $arguments) {
-                    $this->resolvedTypes[$typeString][] = $this->runMethod($method, $arguments);
+                    $methodResult = $this->runMethod($method, $arguments);
+                    if ($methodResult !== null) {
+                        $this->resolvedTypes[$typeString][] = $methodResult;
+                    }
                 }
             }
         }
@@ -59,7 +62,8 @@ final class MatrixBuilder
     {
         $parameters = $method->getParameters();
         if (empty($parameters)) {
-            return [[$this->runMethod($method, [])]];
+            $singleMethodOutput = $this->runMethod($method, []);
+            return $singleMethodOutput === null ? [] : [[$singleMethodOutput]];
         }
         $combinations = [];
         foreach ($parameters as $parameter) {
@@ -95,7 +99,7 @@ final class MatrixBuilder
             foreach ($firstCombination as $combinationOption) {
                 $result[] = [$combinationOption];
             }
-            return $result;;
+            return $result;
         }
         foreach ($firstCombination as $combinationOption) {
             foreach ($this->buildCombinations($combinations) as $combinationVariation) {
