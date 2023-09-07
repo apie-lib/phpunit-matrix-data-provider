@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1694075056">
-  <project timestamp="1694075056">
+<coverage generated="1694098153">
+  <project timestamp="1694098153">
     <file name="/home/runner/work/phpunit-matrix-data-provider/phpunit-matrix-data-provider/src/MatrixBuilder.php">
       <class name="Apie\PhpunitMatrixDataProvider\MatrixBuilder" namespace="global">
         <metrics complexity="19" methods="5" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="49" coveredstatements="39" elements="54" coveredelements="40"/>
