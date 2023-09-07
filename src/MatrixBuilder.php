@@ -17,7 +17,7 @@ final class MatrixBuilder
         foreach ($refl->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $returnType = $method->getReturnType();
             if ($returnType) {
-                $returnType = (string) $returnType;
+                $returnType = trim((string) $returnType, '?');
                 $this->resolvedMethods[$returnType] ??= [];
                 $this->resolvedMethods[$returnType][] = $method;
             }
@@ -31,23 +31,35 @@ final class MatrixBuilder
 
     public function getVariations(ReflectionType $type): array
     {
-        $typeString = (string) $type;
+        $typeString = trim((string) $type, '?');
         if (!isset($this->resolvedTypes[$typeString])) {
             $this->resolvedTypes[$typeString] = [];
             foreach ($this->resolvedMethods[$typeString] ?? [] as $method) {
                 foreach ($this->createMatrix($method) as $arguments) {
-                    $this->resolvedTypes[$typeString][] = $method->invokeArgs($this->objectFactory, $arguments);
+                    $this->resolvedTypes[$typeString][] = $this->runMethod($method, $arguments);
                 }
             }
         }
         return $this->resolvedTypes[$typeString];
     }
 
+    private function runMethod(ReflectionMethod $method, array $arguments): mixed
+    {
+        $declaringClass = $method->getDeclaringClass();
+        if ($declaringClass->isInstance($this->objectFactory)) {
+            return $method->invokeArgs($this->objectFactory, $arguments);
+        }
+        if ($declaringClass->isInstance($this)) {
+            return $method->invokeArgs($this, $arguments);
+        }
+        return $method->invokeArgs(null, $arguments);
+    }
+
     public function createMatrix(ReflectionMethod $method): array
     {
         $parameters = $method->getParameters();
         if (empty($parameters)) {
-            return [[$method->invokeArgs($this->objectFactory, [])]];
+            return [[$this->runMethod($method, [])]];
         }
         $combinations = [];
         foreach ($parameters as $parameter) {

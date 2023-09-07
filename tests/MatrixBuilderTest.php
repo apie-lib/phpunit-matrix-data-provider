@@ -92,7 +92,6 @@ class MatrixBuilderTest extends TestCase
      */
     public function it_can_reference_the_object_factory(?DummyObject $dummyObject = null)
     {
-        $this->markTestSkipped('not working yet');
         $matrixBuilder = new MatrixBuilder(new DummyObject);
         $matrix = $matrixBuilder->createMatrix(new ReflectionMethod($this, __FUNCTION__));
         $this->assertCount(2, $matrix);
