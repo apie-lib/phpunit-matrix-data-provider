@@ -122,6 +122,6 @@ class MatrixBuilderTest extends TestCase
         };
         $matrixBuilder = new MatrixBuilder($objectFactory);
         $matrix = $matrixBuilder->createMatrix(new ReflectionMethod($objectFactory, 'anotherTest'));
-        $this->assertEquals([["1"]], $matrix);
+        $this->assertEquals(['toString, getOne, 0' => ["1"]], $matrix);
     }
 }
