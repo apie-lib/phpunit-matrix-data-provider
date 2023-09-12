@@ -38,7 +38,7 @@ final class MatrixBuilder
                 foreach ($this->createMatrix($method) as $names => $arguments) {
                     $methodResult = $this->runMethod($method, $arguments);
                     if ($methodResult !== null) {
-                        $this->resolvedTypes[$typeString][$method->name . ', ' . $names] = $methodResult;
+                        $this->resolvedTypes[$typeString][$names] = $methodResult;
                     }
                 }
             }
@@ -63,7 +63,7 @@ final class MatrixBuilder
         $parameters = $method->getParameters();
         if (empty($parameters)) {
             $singleMethodOutput = $this->runMethod($method, []);
-            return $singleMethodOutput === null ? [] : [[$singleMethodOutput]];
+            return $singleMethodOutput === null ? [] : [($method->name . "()") => [$singleMethodOutput]];
         }
         $combinations = [];
         foreach ($parameters as $parameter) {
@@ -80,31 +80,30 @@ final class MatrixBuilder
             }
             $variations = $this->getVariations($type);
             if ($parameter->isDefaultValueAvailable()) {
-                $variations["(default)"] = $parameter->getDefaultValue();
+                $variations['(default)'] = $parameter->getDefaultValue();
             }
             $combinations["$type"] = $variations;
         }
-        return $this->buildCombinations($combinations);
+        return $this->buildCombinations($combinations, $method->name . '(', ')');
     }
 
-    private function buildCombinations(array $combinations, string $prefix = ''): array
+    private function buildCombinations(array $combinations, string $prefix = '', string $postfix = ''): array
     {
         if (empty($combinations)) {
             return [];
         }
         $result = [];
-        $key = ($prefix ? ($prefix . ', ') : '');
         $firstCombination = array_shift($combinations);
         if (empty($combinations)) {
             $result = [];
             foreach ($firstCombination as $combinationName => $combinationOption) {
-                $result[$key . $combinationName] = [$combinationOption];
+                $result[$prefix . $combinationName . $postfix] = [$combinationOption];
             }
             return $result;
         }
-        foreach ($firstCombination as $combinationOption) {
-            foreach ($this->buildCombinations($combinations, $key) as $combinationName => $combinationVariation) {
-                $result[$combinationName] = [$combinationOption, ...$combinationVariation];
+        foreach ($firstCombination as $firstCombinationName => $combinationOption) {
+            foreach ($this->buildCombinations($combinations, $prefix, $postfix) as $combinationName => $combinationVariation) {
+                $result[$firstCombinationName . ', ' . $combinationName] = [$combinationOption, ...$combinationVariation];
             }
         }
 

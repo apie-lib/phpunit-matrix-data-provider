@@ -58,7 +58,7 @@ class MatrixBuilderTest extends TestCase
     /**
      * @test
      */
-    public function it_works_with_recursive_objects()
+    public function it_does_not_crash_with_recursive_objects()
     {
         $class = new class {
             public function test(int $a): int
@@ -122,6 +122,6 @@ class MatrixBuilderTest extends TestCase
         };
         $matrixBuilder = new MatrixBuilder($objectFactory);
         $matrix = $matrixBuilder->createMatrix(new ReflectionMethod($objectFactory, 'anotherTest'));
-        $this->assertEquals(['toString, getOne, 0' => ["1"]], $matrix);
+        $this->assertEquals(['anotherTest(toString(getOne()))' => ["1"]], $matrix);
     }
 }
