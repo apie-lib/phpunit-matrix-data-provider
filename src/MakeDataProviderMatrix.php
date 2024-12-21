@@ -6,7 +6,7 @@ use ReflectionMethod;
 
 trait MakeDataProviderMatrix
 {
-    private function createDataProviderFrom(ReflectionMethod $method, object $objectFactory): Generator
+    private static function createDataProviderFrom(ReflectionMethod $method, object $objectFactory): Generator
     {
         $builder = new MatrixBuilder($objectFactory);
         yield from $builder->createMatrix($method);

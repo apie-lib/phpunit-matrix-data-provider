@@ -12,10 +12,10 @@ class MatrixBuilderTest extends TestCase
 {
     use MakeDataProviderMatrix;
 
-    public function provideIntegers(): Generator
+    public static function provideIntegers(): Generator
     {
-        yield from $this->createDataProviderFrom(
-            new ReflectionMethod($this, 'it_works_with_phpunit'),
+        yield from self::createDataProviderFrom(
+            new ReflectionMethod(__CLASS__, 'it_works_with_phpunit'),
             new class {
                 public function getOne(): int
                 {
